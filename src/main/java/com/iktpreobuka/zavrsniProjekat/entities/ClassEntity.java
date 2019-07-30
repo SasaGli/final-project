@@ -20,10 +20,9 @@ public class ClassEntity {
 	private Integer id;
 	private Integer classNumber;
 	
-	@ManyToMany(fetch=FetchType.LAZY,cascade=CascadeType.REFRESH)
-	@JoinTable(name="Class_Grade",joinColumns= {@JoinColumn(name="Class_id",nullable=false)},
-	inverseJoinColumns= {@JoinColumn(name="Grade_id",nullable=false)})
-	Set <GradeEntity> grades=new HashSet<GradeEntity>();
+	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.REFRESH)
+	@JoinTable(name="grade")
+	private GradeEntity grade;
 	
 	
 	@ManyToOne(cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)

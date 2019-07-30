@@ -16,12 +16,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class StudentEntity extends Person{
+
+public class StudentEntity extends UserEntity{
 	
 	@Id
-	@GeneratedValue
+	
 	private Integer id;
 	
 	@OneToMany(mappedBy="student",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
@@ -34,6 +35,13 @@ public class StudentEntity extends Person{
 	@JoinTable(name="Parent_Student",joinColumns= {@JoinColumn(name="Student_id",nullable=false)},
 	inverseJoinColumns= {@JoinColumn(name="Parent_id",nullable=false)})
 	Set <GradeEntity> parents=new HashSet<GradeEntity>();
+	
+	
+
+	public StudentEntity(String name, String surname, String jmbg, String email, String phoneNumber) {
+		super(name, surname, jmbg, email, phoneNumber);
+	}
+
 
 	public StudentEntity() {
 		

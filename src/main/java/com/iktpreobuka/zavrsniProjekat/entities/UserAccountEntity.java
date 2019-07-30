@@ -1,8 +1,13 @@
 package com.iktpreobuka.zavrsniProjekat.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import com.iktpreobuka.zavrsniProjekat.enumerations.ERole;
 
@@ -15,6 +20,9 @@ public class UserAccountEntity {
 	private String password;
 	private ERole role;
 	
+	@ManyToOne(cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+	@JoinColumn(name="user")
+	private UserEntity user;
 	
 	public UserAccountEntity() {
 		super();

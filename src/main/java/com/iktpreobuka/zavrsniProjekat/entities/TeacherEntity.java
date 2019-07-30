@@ -16,12 +16,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class TeacherEntity extends Person {
+
+public class TeacherEntity extends UserEntity {
 	@Id
-	@GeneratedValue
+	
 	private Integer id;
 	
 	
@@ -34,14 +35,15 @@ public class TeacherEntity extends Person {
 	Set <GradeEntity> subjects=new HashSet<GradeEntity>();
 	
 	
+	
 	public TeacherEntity() {
 		super();
 	}
 
 
-	public TeacherEntity(Integer id, String name, String surname) {
-		super(name,surname);
-		this.id = id;
+	public TeacherEntity(String name, String surname, String jmbg, String email, String phoneNumber) {
+		super(name,surname, jmbg,email,phoneNumber);
+		
 		
 	}
 

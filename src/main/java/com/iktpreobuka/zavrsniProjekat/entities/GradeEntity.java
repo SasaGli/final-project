@@ -1,6 +1,8 @@
 package com.iktpreobuka.zavrsniProjekat.entities;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
 public class GradeEntity {
@@ -24,10 +27,8 @@ public class GradeEntity {
 	inverseJoinColumns= {@JoinColumn(name="Subject_id",nullable=false)})
 	Set <GradeEntity> subjects=new HashSet<GradeEntity>();
 	
-	@ManyToMany(fetch=FetchType.LAZY,cascade=CascadeType.REFRESH)
-	@JoinTable(name="Class_Grade",joinColumns= {@JoinColumn(name="Grade_id",nullable=false)},
-	inverseJoinColumns= {@JoinColumn(name="Class_id",nullable=false)})
-	Set <GradeEntity> classes=new HashSet<GradeEntity>();
+	@OneToMany(mappedBy="grade",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+	List<ClassEntity>classes=new ArrayList<ClassEntity>();
 	public GradeEntity() {
 		super();
 	}

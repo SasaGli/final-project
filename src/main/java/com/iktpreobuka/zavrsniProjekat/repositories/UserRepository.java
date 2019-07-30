@@ -3,7 +3,8 @@ package com.iktpreobuka.zavrsniProjekat.repositories;
 import org.springframework.data.repository.CrudRepository;
 
 import com.iktpreobuka.zavrsniProjekat.entities.UserAccountEntity;
+import com.iktpreobuka.zavrsniProjekat.entities.UserEntity;;
 
-public interface UserAccountRepository extends CrudRepository<UserAccountEntity,Integer> {
+public interface UserRepository extends CrudRepository <UserEntity,Integer>{
 
 }

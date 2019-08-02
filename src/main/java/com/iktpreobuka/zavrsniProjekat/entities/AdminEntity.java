@@ -1,5 +1,8 @@
 package com.iktpreobuka.zavrsniProjekat.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class AdminEntity extends UserEntity {
 	private Integer id;
 

@@ -7,21 +7,22 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public class UserEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@NotNull(message="First name must be provided")
 	@Size(min=2,max=30,message="First name must be between {min} and {max} characters long.")
@@ -40,7 +41,7 @@ public class UserEntity {
 	@Size(min=9,max=13,message="Phone number must be between {min} and {max} characters long.")
 	private String phoneNumber;
 	
-
+	@JsonBackReference
 	@OneToMany(mappedBy="user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
 	List<UserAccountEntity> userAccount=new ArrayList<UserAccountEntity>();
 

@@ -23,6 +23,7 @@ import com.iktpreobuka.zavrsniProjekat.entities.TeacherEntity;
 import com.iktpreobuka.zavrsniProjekat.entities.UserAccountEntity;
 import com.iktpreobuka.zavrsniProjekat.entities.UserEntity;
 import com.iktpreobuka.zavrsniProjekat.entities.dto.UserDTO;
+import com.iktpreobuka.zavrsniProjekat.enumerations.ERole;
 import com.iktpreobuka.zavrsniProjekat.repositories.AdminRepository;
 import com.iktpreobuka.zavrsniProjekat.repositories.ParentRepository;
 import com.iktpreobuka.zavrsniProjekat.repositories.StudentRepository;
@@ -40,12 +41,10 @@ public class UserController {
 	@Autowired TeacherRepository teacherRepository;
 	@Autowired UserRepository userRepository;
 	@Autowired UserAccountRepository userAccountRepository;
-	private UserEntity user;
-	private UserAccountEntity userAccount;
-	private AdminEntity admin;
-	private StudentEntity student;
-	private ParentEntity parent;
-	private TeacherEntity teacher;
+	
+	
+	
+	
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<?> getAllusers()
 	
@@ -79,49 +78,84 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.POST)
 	
 	public ResponseEntity<?> addNewuser(@Valid @RequestBody UserDTO newuser,BindingResult result) {
-
+		
+		if (newuser.getRole() != ERole.ROLE_ADMIN && newuser.getRole() != ERole.ROLE_PARENT
+				&& newuser.getRole() != ERole.ROLE_STUDENT && newuser.getRole() != ERole.ROLE_TEACHER) {
+			return new ResponseEntity<RESTError>(new RESTError("User role is invalid."),
+					HttpStatus.BAD_REQUEST);
+		}
+		
 if(result.hasErrors())
 {
 	return new ResponseEntity<> (createErrorMessage(result), HttpStatus. BAD_REQUEST );
 }
-	userAccount.setPassword(newuser.getPassword());
-	userAccount.setUsername(newuser.getUsername());
-	userAccount.setRole(newuser.getRole());
-	userAccountRepository.save(userAccount);
 	
+	UserEntity user = new UserEntity();
 	user.setEmail(newuser.getEmail());
 	user.setJmbg(newuser.getJmbg());
 	user.setName(newuser.getName());
 	user.setPhoneNumber(newuser.getPhoneNumber());
 	user.setSurname(newuser.getSurname());
-	user.getUserAccount().add(userAccount);
+	
+	UserAccountEntity userAccount=new UserAccountEntity();	
+	userAccount.setPassword(newuser.getPassword());
+	userAccount.setUsername(newuser.getUsername());
+	userAccount.setRole(newuser.getRole());
+	userAccount.setUser(user);
+	
+	
+	
 	userRepository.save(user);
+	userAccountRepository.save(userAccount);
 	
-	
-	if(newuser.getRole().equals("ROLE_ADMIN"))
+	if(newuser.getRole().name().equals("ROLE_ADMIN"))
 	{
+		AdminEntity admin=new AdminEntity();
 		admin.setId(user.getId());
+		admin.setEmail(newuser.getEmail());
+		admin.setJmbg(newuser.getJmbg());
+		admin.setName(newuser.getName());
+		admin.setPhoneNumber(newuser.getPhoneNumber());
+		admin.setSurname(newuser.getSurname());
 		adminRepository.save(admin);
 		
 		
 	}
-	if(newuser.getRole().equals("ROLE_STUDENT"))
+	if(newuser.getRole().name().equals("ROLE_STUDENT"))
 	{
+		StudentEntity student=new StudentEntity();
 		student.setId(user.getId());
+		student.setEmail(newuser.getEmail());
+		student.setJmbg(newuser.getJmbg());
+		student.setName(newuser.getName());
+		student.setPhoneNumber(newuser.getPhoneNumber());
+		student.setSurname(newuser.getSurname());
 		studentRepository.save(student);
 		
 		
 	}
-	if(newuser.getRole().equals("ROLE_PARENT"))
+	if(newuser.getRole().name().equals("ROLE_PARENT"))
 	{
+		ParentEntity parent=new ParentEntity();
 		parent.setId(user.getId());
+		parent.setEmail(newuser.getEmail());
+		parent.setJmbg(newuser.getJmbg());
+		parent.setName(newuser.getName());
+		parent.setPhoneNumber(newuser.getPhoneNumber());
+		parent.setSurname(newuser.getSurname());
 		parentRepository.save(parent);
 		
 		
 	}
-	if(newuser.getRole().equals("ROLE_TEACHER"))
+	if(newuser.getRole().name().equals("ROLE_TEACHER"))
 	{
+		TeacherEntity teacher =new TeacherEntity();
 		teacher.setId(user.getId());
+		teacher.setEmail(newuser.getEmail());
+		teacher.setJmbg(newuser.getJmbg());
+		teacher.setName(newuser.getName());
+		teacher.setPhoneNumber(newuser.getPhoneNumber());
+		teacher.setSurname(newuser.getSurname());
 		teacherRepository.save(teacher);
 		
 		
@@ -129,7 +163,8 @@ if(result.hasErrors())
 		
 		return new ResponseEntity<UserEntity> (user, HttpStatus.OK);
 		
-	}
+}
+	
 	private String createErrorMessage (BindingResult result)
 	{
 		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage)

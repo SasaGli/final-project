@@ -32,7 +32,7 @@ public class UserDTO {
 	@NotNull(message="ROLE must be provided")
 	private ERole role;
 	public UserDTO(String name, String surname, String jmbg, String email, String phoneNumber, String username,
-			String password, ERole role) {
+			String password,ERole role) {
 		super();
 		this.name = name;
 		this.surname = surname;

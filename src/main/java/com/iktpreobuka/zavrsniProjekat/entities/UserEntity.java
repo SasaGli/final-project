@@ -16,7 +16,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -40,8 +41,8 @@ public class UserEntity {
 	@NotNull(message="Phone number must be provided")
 	@Size(min=9,max=13,message="Phone number must be between {min} and {max} characters long.")
 	private String phoneNumber;
-	
-	@JsonBackReference
+	@JsonIgnore
+	@JsonManagedReference(value="account-user")
 	@OneToMany(mappedBy="user",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
 	List<UserAccountEntity> userAccount=new ArrayList<UserAccountEntity>();
 

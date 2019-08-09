@@ -18,6 +18,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 
 public class TeacherEntity extends UserEntity {
@@ -25,14 +28,14 @@ public class TeacherEntity extends UserEntity {
 	
 	private Integer id;
 	
-	
-	@OneToMany(mappedBy="teacher",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+	@JsonManagedReference(value="mark-teacher")
+	@OneToMany(mappedBy="teacher",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	List<MarkEntity> mark=new ArrayList<>();
 	
-	@ManyToMany(fetch=FetchType.LAZY,cascade=CascadeType.REFRESH)
+	@ManyToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinTable(name="Subject_Teacher",joinColumns= {@JoinColumn(name="Teacher_id",nullable=false)},
 	inverseJoinColumns= {@JoinColumn(name="Subject_id",nullable=false)})
-	Set <GradeEntity> subjects=new HashSet<GradeEntity>();
+	List <SubjectEntity> subjects=new ArrayList<SubjectEntity>();
 	
 	
 	

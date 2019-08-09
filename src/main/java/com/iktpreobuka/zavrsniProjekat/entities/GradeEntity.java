@@ -15,6 +15,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class GradeEntity {
 	@Id
@@ -22,12 +26,31 @@ public class GradeEntity {
 	private Integer id;
 	private Integer grade;
 	
-	@ManyToMany(fetch=FetchType.LAZY,cascade=CascadeType.REFRESH)
+	@ManyToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinTable(name="Subject_Grade",joinColumns= {@JoinColumn(name="Grade_id",nullable=false)},
 	inverseJoinColumns= {@JoinColumn(name="Subject_id",nullable=false)})
-	Set <GradeEntity> subjects=new HashSet<GradeEntity>();
+	List <SubjectEntity> subjects=new ArrayList<SubjectEntity>();
 	
-	@OneToMany(mappedBy="grade",cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+	
+	
+	public List<ClassEntity> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(List<ClassEntity> classes) {
+		this.classes = classes;
+	}
+
+	public List<SubjectEntity> getSubjects() {
+		return subjects;
+	}
+
+	public void setSubjects(List<SubjectEntity> subjects) {
+		this.subjects = subjects;
+	}
+
+	@JsonManagedReference(value="class-grade")
+	@OneToMany(mappedBy="grade",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	List<ClassEntity>classes=new ArrayList<ClassEntity>();
 	public GradeEntity() {
 		super();

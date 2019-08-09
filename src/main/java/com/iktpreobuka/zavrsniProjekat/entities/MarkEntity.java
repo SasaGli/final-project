@@ -9,21 +9,30 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 public class MarkEntity {
 	@Id
 	@GeneratedValue
 	private Integer id;
 	private LocalDate date;
+	@Min(value=1,message="Mark must be higher than 0")
+	@Max(value=5,message="Mark must be Lower or equal to 5")
 	private Integer mark;
-	
-	@ManyToOne(cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+	@JsonBackReference(value="mark-student")
+	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="student")
 	private StudentEntity student;
-	@ManyToOne(cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+	@JsonBackReference(value="subject-mark")
+	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="subject")
 	private SubjectEntity subject;
-	@ManyToOne(cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
+	@JsonBackReference(value="mark-teacher")
+	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="teacher")
 	private TeacherEntity teacher;
 	

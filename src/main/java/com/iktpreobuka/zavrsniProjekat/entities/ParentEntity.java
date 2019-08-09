@@ -18,6 +18,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.iktpreobuka.zavrsniProjekat.enumerations.ERole;
 
 @Entity
@@ -29,10 +31,11 @@ public class ParentEntity extends UserEntity {
 	
 	
 	
-	@ManyToMany(fetch=FetchType.LAZY,cascade=CascadeType.REFRESH)
+	@ManyToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinTable(name="Parent_Student",joinColumns= {@JoinColumn(name="Parent_id",nullable=false)},
 	inverseJoinColumns= {@JoinColumn(name="Student_id",nullable=false)})
-	Set <GradeEntity> students=new HashSet<GradeEntity>();
+	List <StudentEntity> students=new ArrayList<StudentEntity>();
+	
 	
 	
 	public ParentEntity() {

@@ -10,7 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iktpreobuka.zavrsniProjekat.enumerations.ERole;
 
 @Entity
@@ -19,10 +20,11 @@ public class UserAccountEntity {
 	@GeneratedValue
 	private Integer id;
 	private String username;
+	@JsonIgnore
 	private String password;
 	 @Enumerated(EnumType.STRING)
 	private ERole role;
-	 @JsonManagedReference
+	 @JsonBackReference(value="account-user")
 	@ManyToOne(cascade=CascadeType.REFRESH,fetch=FetchType.LAZY)
 	@JoinColumn(name="user")
 	private UserEntity user;

@@ -1,5 +1,7 @@
 package com.iktpreobuka.zavrsniProjekat.entities.dto;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

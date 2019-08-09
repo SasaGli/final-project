@@ -4,9 +4,12 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,28 +33,30 @@ import com.iktpreobuka.zavrsniProjekat.repositories.StudentRepository;
 import com.iktpreobuka.zavrsniProjekat.repositories.TeacherRepository;
 import com.iktpreobuka.zavrsniProjekat.repositories.UserAccountRepository;
 import com.iktpreobuka.zavrsniProjekat.repositories.UserRepository;
+import com.iktpreobuka.zavrsniProjekat.security.util.Encryption;
 
 
 @RestController
 @RequestMapping("/userAccount")
 public class UserController {
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 	@Autowired AdminRepository adminRepository;
 	@Autowired StudentRepository studentRepository;
 	@Autowired ParentRepository parentRepository;
 	@Autowired TeacherRepository teacherRepository;
 	@Autowired UserRepository userRepository;
 	@Autowired UserAccountRepository userAccountRepository;
+	@Autowired Encryption encryption;
 	
 	
-	
-	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<?> getAllusers()
 	
 	{
 		return new ResponseEntity<Iterable<UserEntity>>(userRepository.findAll(), HttpStatus.OK);
 	}
-	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<?> findById(@PathVariable Integer id) {
 
@@ -63,6 +68,7 @@ public class UserController {
 		}
 
 	}
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> deleteuser(@PathVariable Integer id) {
 
@@ -73,8 +79,10 @@ public class UserController {
 
 		UserEntity user = userRepository.findById(id).get();
 		userRepository.deleteById(id);
+		logger.info("User deleted");
 		return new ResponseEntity<UserEntity>(user, HttpStatus.OK);
 	}
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST)
 	
 	public ResponseEntity<?> addNewuser(@Valid @RequestBody UserDTO newuser,BindingResult result) {
@@ -98,15 +106,15 @@ if(result.hasErrors())
 	user.setSurname(newuser.getSurname());
 	
 	UserAccountEntity userAccount=new UserAccountEntity();	
-	userAccount.setPassword(newuser.getPassword());
+	userAccount.setPassword(encryption.getPassEncoded(newuser.getPassword()));
 	userAccount.setUsername(newuser.getUsername());
 	userAccount.setRole(newuser.getRole());
-	userAccount.setUser(user);
 	
 	
 	
-	userRepository.save(user);
-	userAccountRepository.save(userAccount);
+	
+	//userRepository.save(user);
+	
 	
 	if(newuser.getRole().name().equals("ROLE_ADMIN"))
 	{
@@ -118,6 +126,7 @@ if(result.hasErrors())
 		admin.setPhoneNumber(newuser.getPhoneNumber());
 		admin.setSurname(newuser.getSurname());
 		adminRepository.save(admin);
+		userAccount.setUser(admin);
 		
 		
 	}
@@ -131,6 +140,7 @@ if(result.hasErrors())
 		student.setPhoneNumber(newuser.getPhoneNumber());
 		student.setSurname(newuser.getSurname());
 		studentRepository.save(student);
+		userAccount.setUser(student);
 		
 		
 	}
@@ -144,6 +154,7 @@ if(result.hasErrors())
 		parent.setPhoneNumber(newuser.getPhoneNumber());
 		parent.setSurname(newuser.getSurname());
 		parentRepository.save(parent);
+		userAccount.setUser(parent);
 		
 		
 	}
@@ -157,10 +168,12 @@ if(result.hasErrors())
 		teacher.setPhoneNumber(newuser.getPhoneNumber());
 		teacher.setSurname(newuser.getSurname());
 		teacherRepository.save(teacher);
+		userAccount.setUser(teacher);
 		
 		
 	}
-		
+	userAccountRepository.save(userAccount);
+	logger.info("user added");
 		return new ResponseEntity<UserEntity> (user, HttpStatus.OK);
 		
 }
@@ -170,7 +183,8 @@ if(result.hasErrors())
 		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage)
 				.collect(Collectors.joining (" "));
 	}
-
+	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> updateuser(@PathVariable Integer id,@Valid @RequestBody UserEntity userEntity,BindingResult result) {
 		UserEntity user = userRepository.findById(id).get();
